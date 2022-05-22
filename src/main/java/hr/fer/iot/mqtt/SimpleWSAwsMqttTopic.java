@@ -1,4 +1,4 @@
-package hr.fer.iot.sdkv1.mqtt;
+package hr.fer.iot.mqtt;
 
 import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotQos;
@@ -6,11 +6,11 @@ import com.amazonaws.services.iot.client.AWSIotTopic;
 
 import java.util.logging.Logger;
 
-public class SimpleAwsMqttTopic extends AWSIotTopic {
+public class SimpleWSAwsMqttTopic extends AWSIotTopic {
 
-    private static final Logger LOGGER = Logger.getLogger(SimpleAwsMqttTopic.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SimpleWSAwsMqttTopic.class.getName());
 
-    public SimpleAwsMqttTopic(String topic, AWSIotQos qos) {
+    public SimpleWSAwsMqttTopic(String topic, AWSIotQos qos) {
         super(topic, qos);
     }
 

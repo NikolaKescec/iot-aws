@@ -1,10 +1,10 @@
-package hr.fer.iot.sdkv1;
+package hr.fer.iot.sdkv1.ws;
 
 import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.AWSIotQos;
-import hr.fer.iot.sdkv1.mqtt.SimpleAwsMqttClient;
-import hr.fer.iot.sdkv1.mqtt.SimpleAwsMqttTopic;
+import hr.fer.iot.mqtt.SimpleTLSAwsMqttClient;
+import hr.fer.iot.mqtt.SimpleWSAwsMqttTopic;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,27 +26,25 @@ public class Main {
         final String awsSecret =
             new String(Files.readAllBytes(Paths.get(classLoader.getResource("secrets/awssecret").getPath())));
 
-        final SimpleAwsMqttClient.SimpleAwsMqttClientBuilder simpleAwsMqttClientBuilder =
-            SimpleAwsMqttClient.getBuilder()
+        final SimpleTLSAwsMqttClient.SimpleAwsMqttClientBuilder simpleAwsMqttClientBuilder =
+            SimpleTLSAwsMqttClient.getBuilder()
                 .withClientId("test-thing")
                 .withEndpoint("a1rfupjl86n6ia-ats.iot.us-east-1.amazonaws.com")
                 .withAwsAccessKeyId(awsKey)
                 .withAwsSecretAccessKey(awsSecret);
 
-        try (final SimpleAwsMqttClient simpleAwsMqttClient = simpleAwsMqttClientBuilder.build()) {
-            final AWSIotMqttClient client = simpleAwsMqttClient.createConnection();
+        try (final SimpleTLSAwsMqttClient simpleTLSAwsMqttClient = simpleAwsMqttClientBuilder.build()) {
+            final AWSIotMqttClient client = simpleTLSAwsMqttClient.createConnection();
 
             final String payload = "{\"message\": \"HELLO WORLD\"}";
             final AWSIotMessage message = new AWSIotMessage(TOPIC[0], AWSIotQos.QOS0, payload);
             client.publish(message);
 
-            final SimpleAwsMqttTopic awsIotTopic = new SimpleAwsMqttTopic(TOPIC[1], AWSIotQos.QOS0);
+            final SimpleWSAwsMqttTopic awsIotTopic = new SimpleWSAwsMqttTopic(TOPIC[1], AWSIotQos.QOS0);
             client.subscribe(awsIotTopic);
 
             final Scanner scanner = new Scanner(System.in);
-            while (!scanner.hasNext()) {
-                // wait for input
-            }
+            scanner.nextLine();
             scanner.close();
         } catch (Exception ex) {
             LOGGER.severe(ex.getMessage());

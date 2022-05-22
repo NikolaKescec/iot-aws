@@ -1,11 +1,10 @@
-package hr.fer.iot.sdkv1.mqtt;
+package hr.fer.iot.mqtt;
 
 import com.amazonaws.services.iot.client.AWSIotConnectionStatus;
 import com.amazonaws.services.iot.client.AWSIotException;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.AWSIotTimeoutException;
-import com.amazonaws.services.iot.client.auth.Credentials;
-import com.amazonaws.services.iot.client.auth.StaticCredentialsProvider;
+import hr.fer.iot.sdkv1.tls.amazon.SampleUtil;
 
 import java.util.logging.Logger;
 
@@ -19,18 +18,13 @@ public class SimpleAwsMqttClient implements AutoCloseable {
 
     private String clientId;
 
-    private String awsAccessKeyId;
+    private String certificateFile;
 
-    private String awsSecretAccessKey;
+    private String privateKeyFile;
 
     private AWSIotMqttClient client;
 
     private SimpleAwsMqttClient() {
-    }
-
-    public SimpleAwsMqttClient(String clientId, String endpoint) {
-        this.clientId = clientId;
-        this.endpoint = endpoint;
     }
 
     public static SimpleAwsMqttClientBuilder getBuilder() {
@@ -39,11 +33,14 @@ public class SimpleAwsMqttClient implements AutoCloseable {
 
     public AWSIotMqttClient createConnection() throws AWSIotException, AWSIotTimeoutException {
         if (client != null && client.getConnectionStatus() == AWSIotConnectionStatus.CONNECTED) {
-            throw new AWSIotException("Client is already connected");
+            LOGGER.warning("Client is already connected");
+
+            return client;
         }
 
-        final Credentials credentials = new Credentials(awsAccessKeyId, awsSecretAccessKey);
-        client = new AWSIotMqttClient(endpoint, clientId, new StaticCredentialsProvider(credentials), "us-east-1");
+        final SampleUtil.KeyStorePasswordPair pair =
+            SampleUtil.getKeyStorePasswordPair(this.certificateFile, this.privateKeyFile);
+        client = new AWSIotMqttClient(endpoint, clientId, pair.keyStore, pair.keyPassword);
 
         client.setCleanSession(true);
         client.connect(TIMEOUT);
@@ -80,14 +77,14 @@ public class SimpleAwsMqttClient implements AutoCloseable {
             return this;
         }
 
-        public SimpleAwsMqttClientBuilder withAwsAccessKeyId(String awsAccessKeyId) {
-            simpleAwsMqttClient.awsAccessKeyId = awsAccessKeyId;
+        public SimpleAwsMqttClientBuilder withCertificateFile(String certificateFile) {
+            simpleAwsMqttClient.certificateFile = certificateFile;
 
             return this;
         }
 
-        public SimpleAwsMqttClientBuilder withAwsSecretAccessKey(String awsSecretAccessKey) {
-            simpleAwsMqttClient.awsSecretAccessKey = awsSecretAccessKey;
+        public SimpleAwsMqttClientBuilder withPrivateKeyFile(String privateKeyFile) {
+            simpleAwsMqttClient.privateKeyFile = privateKeyFile;
 
             return this;
         }

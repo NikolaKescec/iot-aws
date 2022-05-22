@@ -38,10 +38,10 @@ public class Main {
             .withClientId("test-thing")
             .withEndpoint("a1rfupjl86n6ia-ats.iot.us-east-1.amazonaws.com")
             .withCertificatePath(classLoader.getResource(
-                    "cert_keys/8fe387afe4973c5332c3813fadec43777bde0fc2969d6ef6c9e1a3d9f738bacf-certificate.pem.crt")
+                    "8fe387afe4973c5332c3813fadec43777bde0fc2969d6ef6c9e1a3d9f738bacf-certificate.pem.crt")
                 .getPath())
             .withPrivateKeyPath(classLoader.getResource(
-                "cert_keys/8fe387afe4973c5332c3813fadec43777bde0fc2969d6ef6c9e1a3d9f738bacf-private.pem.key").getPath())
+                "8fe387afe4973c5332c3813fadec43777bde0fc2969d6ef6c9e1a3d9f738bacf-private.pem.key").getPath())
             .withRootCAPath(classLoader.getResource("cert_keys/root-CA.pem").getPath())
             .withCallbacks(mqttClientConnectionEvents)
             .build();
