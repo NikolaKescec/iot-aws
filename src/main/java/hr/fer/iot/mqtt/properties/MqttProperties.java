@@ -5,7 +5,7 @@ public class MqttProperties {
     private MqttProperties() {
     }
 
-    public static final Integer NUMBER_OF_ROOMS = 3;
+    public static final Integer NUMBER_OF_VIRTUAL_ROOMS = 3;
 
     public static final Integer TIMEOUT = 10000;
 

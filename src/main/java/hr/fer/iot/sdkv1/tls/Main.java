@@ -25,8 +25,7 @@ public class Main {
                     .getPath());
 
         try (final SimpleAwsMqttClient simpleTLSAwsMqttClient = simpleAwsMqttClientBuilder.build();) {
-            final SimpleAwsMqttExecutor simpleAwsMqttExecutor = new SimpleAwsMqttExecutor(simpleTLSAwsMqttClient);
-            simpleAwsMqttExecutor.executeClient();
+            SimpleAwsMqttExecutor.executeClient(simpleTLSAwsMqttClient);
         } catch (Exception ex) {
             LOGGER.severe(ex.getMessage());
         }

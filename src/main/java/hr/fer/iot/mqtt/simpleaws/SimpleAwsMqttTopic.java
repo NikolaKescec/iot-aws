@@ -16,7 +16,7 @@ public class SimpleAwsMqttTopic extends AWSIotTopic {
 
     @Override
     public void onMessage(AWSIotMessage message) {
-        LOGGER.info("Message received: " + message.getStringPayload());
+        LOGGER.info("Message received: " + message.getStringPayload() + " on topic: " + getTopic());
     }
 
 }

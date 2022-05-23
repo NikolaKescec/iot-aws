@@ -2,9 +2,11 @@ package hr.fer.iot.mqtt.simpleaws.client;
 
 import com.amazonaws.services.iot.client.AWSIotConnectionStatus;
 import com.amazonaws.services.iot.client.AWSIotException;
+import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.AWSIotTimeoutException;
 import hr.fer.iot.mqtt.properties.MqttProperties;
+import hr.fer.iot.mqtt.simpleaws.SimpleAwsMqttTopic;
 
 import java.util.logging.Logger;
 
@@ -14,19 +16,27 @@ public abstract class SimpleAwsMqttClient implements AutoCloseable {
 
     protected AWSIotMqttClient client;
 
-    public AWSIotMqttClient createConnection() throws AWSIotException, AWSIotTimeoutException {
-        if (client != null && client.getConnectionStatus() == AWSIotConnectionStatus.CONNECTED) {
-            LOGGER.warning("Client is already connected");
+    public void prepareClient() {
+        client = this.initiate();
+        client.setCleanSession(true);
+    }
 
-            return client;
+    public void publish(AWSIotMessage message) throws AWSIotException, AWSIotTimeoutException {
+        if (client.getConnectionStatus() == AWSIotConnectionStatus.DISCONNECTED) {
+            client.connect(MqttProperties.TIMEOUT);
+            LOGGER.info("Not connected to AWS. Connection established.");
         }
 
-        client = this.initiate();
+        client.publish(message);
+    }
 
-        client.setCleanSession(true);
-        client.connect(MqttProperties.TIMEOUT);
+    public void subscribe(SimpleAwsMqttTopic topic) throws AWSIotException, AWSIotTimeoutException {
+        if (client.getConnectionStatus() == AWSIotConnectionStatus.DISCONNECTED) {
+            client.connect(MqttProperties.TIMEOUT, true);
+            LOGGER.info("Not connected to AWS. Connection established.");
+        }
 
-        return client;
+        client.subscribe(topic);
     }
 
     protected abstract AWSIotMqttClient initiate();

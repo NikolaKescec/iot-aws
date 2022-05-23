@@ -29,8 +29,7 @@ public class Main {
                 .withAwsSecretAccessKey(awsSecret);
 
         try (final SimpleAwsMqttClient simpleWSAwsMqttClient = simpleAwsMqttClientBuilder.build();) {
-            final SimpleAwsMqttExecutor simpleAwsMqttExecutor = new SimpleAwsMqttExecutor(simpleWSAwsMqttClient);
-            simpleAwsMqttExecutor.executeClient();
+            SimpleAwsMqttExecutor.executeClient(simpleWSAwsMqttClient);
         } catch (Exception ex) {
             LOGGER.severe(ex.getMessage());
         }
