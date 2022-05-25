@@ -23,7 +23,7 @@ public final class SimpleAwsMqttExecutor {
 
             final VirtualThing virtualThing = new VirtualThing(simpleAwsMqttClient);
             virtualThing.setTurnedOn(true);
-            timer.schedule(virtualThing, 5000, 15000);
+            timer.schedule(virtualThing, 5000, MqttProperties.VIRTUAL_PERIOD);
 
             for (int i = 1; i <= MqttProperties.NUMBER_OF_VIRTUAL_ROOMS; i++) {
                 final SimpleAwsMqttTopic simpleAwsMqttTopic =
